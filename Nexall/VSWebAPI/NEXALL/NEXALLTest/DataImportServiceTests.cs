@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NEXALL.DataContext;
-using NEXALL.Services;
+using Nexall.Data;
+using Nexall.Data.DataContext;
+using Nexall.Services;
+
 
 namespace NEXALLTest
 {
     [TestClass]
     public class DataImportServiceTests
     {
-        private NEXALLContext _context;
+        private NexallContext _context;
         private DataImportService _service;
 
         [TestInitialize]
@@ -15,11 +17,11 @@ namespace NEXALLTest
         {
             var databaseName = Guid.NewGuid().ToString();
 
-            var optionsBuilder = new DbContextOptionsBuilder<NEXALLContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<NexallContext>();
             optionsBuilder.UseInMemoryDatabase(databaseName);
 
-            _context = new NEXALLContext(optionsBuilder.Options);
-            _service = new DataImportService(_context);
+            _context = new NexallContext(optionsBuilder.Options);
+           // _service = new DataImportService(_context);
         }
 
         [TestCleanup]

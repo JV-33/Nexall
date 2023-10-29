@@ -1,51 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NEXALL.DataContext;
-using NEXALL.Models;
+using Nexall.Data.Models;
+using Nexall.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NEXALL.Controllers
 {
-
     [ApiController]
     [Route("[controller]")]
     public class CarStatisticsController : ControllerBase
     {
-        private readonly NEXALLContext _context;
+        private readonly ICarStatisticsService _service;
 
-        public CarStatisticsController(NEXALLContext context)
+        public CarStatisticsController(ICarStatisticsService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Statistics>> Get()
         {
-            return _context.Statistics.Take(500).ToList();
+            return Ok(_service.GetAll());
         }
 
         [HttpGet("DayStats/{date}")]
         public ActionResult<IEnumerable<Statistics>> GetByDate(DateTime date)
         {
-            var statisticsForTheDay = _context.Statistics.Where(m => m.Date.Date == date.Date).ToList();
+            var statisticsForTheDay = _service.GetByDate(date);
 
             if (!statisticsForTheDay.Any())
             {
                 return NotFound();
             }
 
-            return statisticsForTheDay;
+            return Ok(statisticsForTheDay);
         }
 
         [HttpGet("{id}")]
         public ActionResult<Statistics> Get(int id)
         {
-            var carStatistic = _context.Statistics.FirstOrDefault(m => m.Id == id);
+            var carStatistic = _service.GetById(id);
 
             if (carStatistic == null)
             {
                 return NotFound();
             }
 
-            return carStatistic;
+            return Ok(carStatistic);
         }
 
         [HttpPost]
@@ -56,9 +58,7 @@ namespace NEXALL.Controllers
                 return BadRequest(ModelState);
             }
 
-            _context.Statistics.Add(carStatistic);
-            _context.SaveChanges();
-
+            _service.Add(carStatistic);
             return CreatedAtAction(nameof(Get), new { id = carStatistic.Id }, carStatistic);
         }
 
@@ -70,29 +70,25 @@ namespace NEXALL.Controllers
                 return BadRequest("ID does not match");
             }
 
-            if (!_context.Statistics.Any(x => x.Id == id))
+            if (_service.GetById(id) == null)
             {
                 return NotFound();
             }
 
-            _context.Update(carStatistic);
-            _context.SaveChanges();
-
+            _service.Update(id, carStatistic);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var carStatistic = _context.Statistics.FirstOrDefault(m => m.Id == id);
+            var carStatistic = _service.GetById(id);
             if (carStatistic == null)
             {
                 return NotFound();
             }
 
-            _context.Statistics.Remove(carStatistic);
-            _context.SaveChanges();
-
+            _service.Delete(id);
             return NoContent();
         }
     }

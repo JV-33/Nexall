@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NEXALL.DataContext;
-using NEXALL.Services;
+using Nexall.Data.DataContext;
+using Nexall.Services;
+
 
 namespace NEXALL
 {
@@ -14,8 +15,11 @@ namespace NEXALL
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<NEXALLContext>(options =>
+            builder.Services.AddDbContext<NexallContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<ICarStatisticsService, CarStatisticsService>();
+
 
             builder.Services.AddCors(options =>
             {

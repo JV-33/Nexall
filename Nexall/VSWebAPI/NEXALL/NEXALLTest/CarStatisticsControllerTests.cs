@@ -1,25 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Nexall.Data;
+using Nexall.Data.DataContext;
+using Nexall.Data.Models;
 using NEXALL.Controllers;
-using NEXALL.DataContext;
-using NEXALL.Models;
+
 
 namespace NEXALLTest
 {
     [TestClass]
     public class CarStatisticsControllerTests
     {
-        private NEXALLContext _context;
+        private NexallContext _context;
         private CarStatisticsController _controller;
 
         [TestInitialize]
         public void Initialize()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<NEXALLContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<NexallContext>();
             optionsBuilder.UseInMemoryDatabase("TestDatabase");
 
-            _context = new NEXALLContext(optionsBuilder.Options);
-            _controller = new CarStatisticsController(_context);
+            _context = new NexallContext(optionsBuilder.Options);
+           // _controller = new CarStatisticsController(_service);
         }
 
 
