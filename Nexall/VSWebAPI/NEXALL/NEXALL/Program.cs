@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
 using Nexall.Data.DataContext;
 using Nexall.Services;
 
@@ -38,7 +33,7 @@ namespace NEXALL
 
             var app = builder.Build();
 
-            // Ielādēt datus no speed.txt faila
+            ////Ielādēt datus no speed.txt faila
             //using (var scope = app.Services.CreateScope())
             //{
             //    var services = scope.ServiceProvider;

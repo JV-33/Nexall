@@ -20,5 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NEXALL\NEXALL.csproj" />
+    <ProjectReference Include="..\Nexall.Services\Nexall.Services.csproj" />
   </ItemGroup>
 </Project>

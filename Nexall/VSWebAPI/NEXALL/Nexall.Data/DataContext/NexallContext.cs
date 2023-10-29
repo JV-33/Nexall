@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Nexall.Data.Models;
 
 namespace Nexall.Data.DataContext
@@ -14,4 +13,3 @@ namespace Nexall.Data.DataContext
         public DbSet<Statistics> Statistics { get; set; }
     }
 }
-

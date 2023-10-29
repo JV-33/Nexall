@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Nexall.Data;
 using Nexall.Data.DataContext;
 using Nexall.Services;
 
@@ -21,7 +20,7 @@ namespace NEXALLTest
             optionsBuilder.UseInMemoryDatabase(databaseName);
 
             _context = new NexallContext(optionsBuilder.Options);
-           // _service = new DataImportService(_context);
+            _service = new DataImportService(_context);
         }
 
         [TestCleanup]

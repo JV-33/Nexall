@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Nexall.Data;
+using NEXALL.Controllers;
 using Nexall.Data.DataContext;
 using Nexall.Data.Models;
-using NEXALL.Controllers;
 
 
 namespace NEXALLTest
@@ -13,115 +12,116 @@ namespace NEXALLTest
     {
         private NexallContext _context;
         private CarStatisticsController _controller;
+        private CarStatisticsService _service;
 
         [TestInitialize]
         public void Initialize()
         {
+            var databaseName = Guid.NewGuid().ToString();
+
             var optionsBuilder = new DbContextOptionsBuilder<NexallContext>();
-            optionsBuilder.UseInMemoryDatabase("TestDatabase");
+            optionsBuilder.UseInMemoryDatabase(databaseName);
 
             _context = new NexallContext(optionsBuilder.Options);
-           // _controller = new CarStatisticsController(_service);
+            _service = new CarStatisticsService(_context);
+            _controller = new CarStatisticsController(_service);
         }
-
 
         [TestMethod]
         public void TestGetById()
         {
             var expectedId = 1;
-            var expectedData = new Statistics { Id = expectedId, Date = DateTime.Now, Speed = 100, RegistrationNumber = "AB1234" };
-            _context.Statistics.Add(expectedData);
+            var statistic = new Statistics { Id = expectedId, Date = DateTime.Now, Speed = 100, RegistrationNumber = "AB1234" };
+            _context.Statistics.Add(statistic);
             _context.SaveChanges();
 
-            var result = _controller.Get(expectedId) as ActionResult<Statistics>;
+            var result = _controller.Get(expectedId);
 
             Assert.IsNotNull(result);
-            var carStatistic = result.Value;
-            Assert.IsNotNull(carStatistic);
-            Assert.AreEqual(expectedId, carStatistic.Id);
+            var okResult = result.Result as OkObjectResult;
+            var retrievedStatistic = okResult.Value as Statistics;
+            Assert.AreEqual(expectedId, retrievedStatistic.Id);
         }
 
         [TestMethod]
-        public void TestGetByIdInvalidRegistrationNumber()
+        public void TestAddStatistic()
         {
-            var expectedId = 2;
-            var invalidData = new Statistics { Id = expectedId, Date = DateTime.Now, Speed = 100, RegistrationNumber = "INVALID" };
-            _context.Statistics.Add(invalidData);
-            _context.SaveChanges();
+            var newStatistic = new Statistics { Date = DateTime.Now, Speed = 200, RegistrationNumber = "CD5678" };
 
-            var result = _controller.Get(expectedId) as ActionResult<Statistics>;
+            var resultAction = _controller.Post(newStatistic);
+            var result = resultAction.Result as CreatedAtActionResult;
 
             Assert.IsNotNull(result);
-            var carStatistic = result.Value;
-            Assert.IsNotNull(carStatistic);
-            Assert.AreEqual(expectedId, carStatistic.Id);
-            Assert.IsFalse(IsRegistrationNumberValid(carStatistic.RegistrationNumber), "Registration number is not valid");
-        }
+            Assert.AreEqual(nameof(_controller.Get), result.ActionName);
+            var addedStatistic = result.Value as Statistics;
+            Assert.IsNotNull(addedStatistic);
+            Assert.AreEqual(newStatistic.Speed, addedStatistic.Speed);
+            Assert.AreEqual(newStatistic.RegistrationNumber, addedStatistic.RegistrationNumber);
 
-        private bool IsRegistrationNumberValid(string registrationNumber)
-        {
-            if (string.IsNullOrEmpty(registrationNumber))
-            {
-                return false;
-            }
-
-            if (registrationNumber.Length != 6)
-            {
-                return false;
-            }
-
-            if (!char.IsUpper(registrationNumber[0]) || !char.IsUpper(registrationNumber[1]))
-            {
-                return false;
-            }
-
-            for (int i = 2; i < 6; i++)
-            {
-                if (!char.IsDigit(registrationNumber[i]))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            var savedStatistic = _context.Statistics.FirstOrDefault(m => m.Id == addedStatistic.Id);
+            Assert.IsNotNull(savedStatistic);
+            Assert.AreEqual(newStatistic.Speed, savedStatistic.Speed);
+            Assert.AreEqual(newStatistic.RegistrationNumber, savedStatistic.RegistrationNumber);
         }
 
         [TestMethod]
-        public void TestGetByDate()
+        public void TestUpdateStatistic()
         {
-            var date = new DateTime(2023, 10, 29);
-            var data1 = new Statistics { Id = 1, Date = date, Speed = 100, RegistrationNumber = "AB1234" };
-            var data2 = new Statistics { Id = 2, Date = date.AddDays(-1), Speed = 90, RegistrationNumber = "CD5678" };
-
-            var existingData1 = _context.Statistics.Find(data1.Id);
-            if (existingData1 != null)
-            {
-                _context.Entry(existingData1).CurrentValues.SetValues(data1);
-            }
-            else
-            {
-                _context.Statistics.Add(data1);
-            }
-
-            var existingData2 = _context.Statistics.Find(data2.Id);
-            if (existingData2 != null)
-            {
-                _context.Entry(existingData2).CurrentValues.SetValues(data2);
-            }
-            else
-            {
-                _context.Statistics.Add(data2);
-            }
-
+            var initialStat = new Statistics { Date = DateTime.Now, Speed = 100, RegistrationNumber = "KL3456" };
+            _context.Statistics.Add(initialStat);
             _context.SaveChanges();
 
-            var result = _controller.GetByDate(date) as ActionResult<IEnumerable<Statistics>>;
+            initialStat.Speed = 150;
+            _controller.Put(initialStat.Id, initialStat);
 
-            Assert.IsNotNull(result);
-            var statistics = result.Value;
-            Assert.IsNotNull(statistics);
-            Assert.AreEqual(1, statistics.Count());
-            Assert.AreEqual(data1.Id, statistics.First().Id);
+            var updatedStat = _context.Statistics.FirstOrDefault(m => m.Id == initialStat.Id);
+            Assert.AreEqual(150, updatedStat.Speed);
+        }
+        [TestMethod]
+        public void TestDeleteStatistic()
+        {
+            var statisticToDelete = new Statistics { Date = DateTime.Now, Speed = 170, RegistrationNumber = "MN7890" };
+            _context.Statistics.Add(statisticToDelete);
+            _context.SaveChanges();
+
+            var initialCount = _context.Statistics.Count();
+
+            _controller.Delete(statisticToDelete.Id);
+
+            Assert.AreEqual(initialCount - 1, _context.Statistics.Count());
+            Assert.IsNull(_context.Statistics.FirstOrDefault(m => m.Id == statisticToDelete.Id));
+        }
+
+        [TestMethod]
+        public void TestGetStatisticsByDate()
+        {
+            var targetDate = DateTime.Now;
+            var statistic = new Statistics { Date = targetDate, Speed = 120, RegistrationNumber = "IJ9012" };
+            _context.Statistics.Add(statistic);
+            _context.SaveChanges();
+
+            var actionResult = _controller.GetByDate(targetDate);
+            var result = actionResult.Result as OkObjectResult;
+            var statistics = result.Value as List<Statistics>;
+
+            Assert.AreEqual(1, statistics.Count);
+            Assert.AreEqual(targetDate.Date, statistics[0].Date.Date);
+        }
+
+        [TestMethod]
+        public void TestGetAllStatistics()
+        {
+            _context.Statistics.AddRange(
+                new Statistics { Date = DateTime.Now, Speed = 100, RegistrationNumber = "EF1234" },
+                new Statistics { Date = DateTime.Now.AddDays(-1), Speed = 150, RegistrationNumber = "GH5678" }
+            );
+            _context.SaveChanges();
+
+            var actionResult = _controller.Get();
+            var result = actionResult.Result as OkObjectResult;
+            var statistics = result.Value as List<Statistics>;
+
+            Assert.AreEqual(2, statistics.Count);
         }
     }
 }

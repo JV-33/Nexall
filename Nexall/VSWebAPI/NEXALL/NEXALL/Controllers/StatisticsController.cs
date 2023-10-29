@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nexall.Data.Models;
 using Nexall.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace NEXALL.Controllers
 {
