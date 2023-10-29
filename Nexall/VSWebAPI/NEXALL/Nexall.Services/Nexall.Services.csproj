@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nexall.Data\Nexall.Data.csproj" />
+    <ProjectReference Include="..\Nexall.Core\Nexall.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nexall.Data\Nexall.Data.csproj" />
   </ItemGroup>
 </Project>

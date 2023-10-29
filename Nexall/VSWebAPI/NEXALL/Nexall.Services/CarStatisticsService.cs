@@ -13,7 +13,7 @@ public class CarStatisticsService : ICarStatisticsService
 
     public IEnumerable<Statistics> GetAll()
     {
-        return _context.Statistics.Take(500).ToList();
+        return _context.Statistics.Take(1000).ToList();
     }
 
     public IEnumerable<Statistics> GetByDate(DateTime date)
