@@ -8,8 +8,10 @@ export default function DayStats() {
   const [data, setData] = useState([]);
   const [chartData, setChartData] = useState({});
   const [chartInstance, setChartInstance] = useState(null); // Pievienojam chartInstance stāvokli
+  const [isLoading, setIsLoading] = useState(false); // Jauns stāvoklis ielādes kontrolei
 
   useEffect(() => {
+    setIsLoading(true); // Sāk ielādi
     fetch(`https://localhost:7241/CarStatistics/DayStats/${selectedDate}`)
       .then(response => {
         if (!response.ok) {
@@ -20,8 +22,12 @@ export default function DayStats() {
       .then(data => {
         setData(data);
         console.log(data);
+        setIsLoading(false); // Beidz ielādi
       })
-      .catch(error => console.log('Fetch error:', error));
+      .catch(error => {
+        console.log('Fetch error:', error);
+        setIsLoading(false); // Beidz ielādi arī kļūdas gadījumā
+      });
   }, [selectedDate]);
 
   useEffect(() => {
@@ -91,7 +97,11 @@ export default function DayStats() {
         />
       </label>
       <button onClick={() => {}}>Apstiprināt</button>
-      <canvas id="dayChart" width="400" height="200"></canvas>
+      {isLoading ? (
+        <p>Ielāde...</p>
+      ) : (
+        <canvas id="dayChart" width="400" height="200"></canvas>
+      )}
     </div>
   );
 }

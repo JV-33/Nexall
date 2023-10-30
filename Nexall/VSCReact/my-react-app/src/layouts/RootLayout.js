@@ -6,10 +6,10 @@ export default function RootLayout () {
             <header>
                 <nav>
                     <h1>Nexall</h1>
-                    <NavLink to = "/">Home</NavLink>
+                    <NavLink to="/" activeClassName="active">Home</NavLink>
                     <NavLink to = "saraksts">Saraksts</NavLink>
                     <NavLink to = "filter">Filter</NavLink>
-                    <NavLink to = "daystats/:date?">DayStats</NavLink>
+                    <NavLink to = "daystats/:date?">Day Stats</NavLink>
                 </nav>
             </header>
             <main>
