@@ -1,4 +1,5 @@
-﻿using Nexall.Data.DataContext;
+﻿using System.Linq;
+using Nexall.Data.DataContext;
 using Nexall.Data.Models;
 using Nexall.Services;
 
@@ -11,10 +12,43 @@ public class CarStatisticsService : ICarStatisticsService
         _context = context;
     }
 
-    public IEnumerable<Statistics> GetAll()
+    public IEnumerable<Statistics> GetAll(int pageSize = 70000, int currentPage = 1)
     {
-        return _context.Statistics.Take(1000).ToList();
+        return _context.Statistics
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize)
+            .AsEnumerable();
     }
+
+    public IEnumerable<Statistics> GetFiltered(int? speed = null, DateTime? fromDate = null, DateTime? toDate = null, string registrationNumber = null, int pageSize = 20) // Pievienoja registrationNumber
+    {
+        var query = _context.Statistics.AsQueryable();
+
+        if (speed.HasValue)
+        {
+            query = query.Where(m => m.Speed == speed.Value);
+        }
+        if (fromDate.HasValue)
+        {
+            query = query.Where(m => m.Date.Date >= fromDate.Value.Date);
+        }
+        if (toDate.HasValue)
+        {
+            query = query.Where(m => m.Date.Date <= toDate.Value.Date);
+        }
+        if (!string.IsNullOrWhiteSpace(registrationNumber)) // Pievienoja reģistrācijas numura filtrēšanu
+        {
+            query = query.Where(m => m.RegistrationNumber == registrationNumber);
+        }
+
+        return query.Take(pageSize).AsEnumerable(); // Pievienoja Take(pageSize)
+    }
+
+
+
+
+
+
 
     public IEnumerable<Statistics> GetByDate(DateTime date)
     {

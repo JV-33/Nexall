@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nexall.Data.Models;
 using Nexall.Services;
+using System;
 
 namespace NEXALL.Controllers
 {
@@ -16,17 +17,27 @@ namespace NEXALL.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Statistics>> Get()
+        public ActionResult<IEnumerable<Statistics>> Get(int pageSize = 70000, int currentPage = 1)
         {
-            return Ok(_service.GetAll());
+            return Ok(_service.GetAll(pageSize, currentPage));
         }
+
+        // Controller
+        [HttpGet("filtered")]
+        public ActionResult<IEnumerable<Statistics>> GetFiltered(int? speed = null, DateTime? fromDate = null, DateTime? toDate = null, string registrationNumber = null)
+        {
+            return Ok(_service.GetFiltered(speed, fromDate, toDate, registrationNumber));
+        }
+
+
+
 
         [HttpGet("DayStats/{date}")]
         public ActionResult<IEnumerable<Statistics>> GetByDate(DateTime date)
         {
             var statisticsForTheDay = _service.GetByDate(date);
 
-            if (!statisticsForTheDay.Any())
+            if (statisticsForTheDay == null || !statisticsForTheDay.Any())
             {
                 return NotFound();
             }
