@@ -1,6 +1,4 @@
 ﻿using Nexall.Data.Models;
-using System;
-using System.Collections.Generic;
 
 namespace Nexall.Services
 {

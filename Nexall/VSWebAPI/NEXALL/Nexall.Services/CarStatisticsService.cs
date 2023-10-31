@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Nexall.Data.DataContext;
+﻿using Nexall.Data.DataContext;
 using Nexall.Data.Models;
 using Nexall.Services;
 
@@ -36,19 +35,13 @@ public class CarStatisticsService : ICarStatisticsService
         {
             query = query.Where(m => m.Date.Date <= toDate.Value.Date);
         }
-        if (!string.IsNullOrWhiteSpace(registrationNumber)) // Pievienoja reģistrācijas numura filtrēšanu
+        if (!string.IsNullOrWhiteSpace(registrationNumber)) 
         {
             query = query.Where(m => m.RegistrationNumber == registrationNumber);
         }
 
-        return query.Take(pageSize).AsEnumerable(); // Pievienoja Take(pageSize)
+        return query.Take(pageSize).AsEnumerable();
     }
-
-
-
-
-
-
 
     public IEnumerable<Statistics> GetByDate(DateTime date)
     {
