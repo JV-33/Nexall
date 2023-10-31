@@ -21,15 +21,11 @@ namespace NEXALL.Controllers
             return Ok(_service.GetAll(pageSize, currentPage));
         }
 
-        // Controller
         [HttpGet("filtered")]
         public ActionResult<IEnumerable<Statistics>> GetFiltered(int? speed = null, DateTime? fromDate = null, DateTime? toDate = null, string registrationNumber = null)
         {
             return Ok(_service.GetFiltered(speed, fromDate, toDate, registrationNumber));
         }
-
-
-
 
         [HttpGet("DayStats/{date}")]
         public ActionResult<IEnumerable<Statistics>> GetByDate(DateTime date)

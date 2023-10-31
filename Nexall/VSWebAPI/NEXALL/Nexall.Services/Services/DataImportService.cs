@@ -1,5 +1,4 @@
-﻿
-using Nexall.Data.DataContext;
+﻿using Nexall.Data.DataContext;
 using Nexall.Data.Models;
 using Nexall.Services.Services;
 

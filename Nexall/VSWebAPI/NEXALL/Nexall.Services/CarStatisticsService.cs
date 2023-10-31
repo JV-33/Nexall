@@ -1,12 +1,12 @@
-﻿using Nexall.Data.DataContext;
+﻿using Nexall.Data;
 using Nexall.Data.Models;
 using Nexall.Services;
 
 public class CarStatisticsService : ICarStatisticsService
 {
-    private readonly NexallContext _context;
+    private readonly INexallContext _context;
 
-    public CarStatisticsService(NexallContext context)
+    public CarStatisticsService(INexallContext context)
     {
         _context = context;
     }
