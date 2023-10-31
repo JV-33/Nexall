@@ -1,5 +1,5 @@
-**/obj/
-**/bin/
-.vs/
-.DS_Store
-/**/node_modules/
+*/**/obj/*
+*/**/bin/*
+*/**/.vs/*
+*/**/.DS_Store/*
+*/**/node_modules/*
