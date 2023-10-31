@@ -1,13 +1,13 @@
 body {
   font-family: 'Arial', sans-serif;
-  font-size: 18px; /* Pievienots, lai palielinātu vispārējo teksta izmēru */
+  font-size: 18px; 
 }
 
 header nav {
   display: flex;
   gap: 20px;
-  justify-content: flex-start; /* Izmainīts, lai izkārtotu saturu pa kreisi */
-  padding: 20px 5%; /* Pievienots iekšējais atstarpes pie malām, lai saturu nedaudz attālinātu no malām */
+  justify-content: flex-start; 
+  padding: 20px 5%;
   background-color: #282c34;
 }
 
@@ -15,7 +15,7 @@ header nav h1 {
   margin-right: auto;
   color: white;
   border-bottom: none;
-  font-size: 2em; /* Palielināts h1 izmērs */
+  font-size: 2em; 
 }
 
 
