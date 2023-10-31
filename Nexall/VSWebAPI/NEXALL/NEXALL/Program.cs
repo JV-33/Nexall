@@ -2,9 +2,6 @@
 using Nexall.Data;
 using Nexall.Data.DataContext;
 using Nexall.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace NEXALL
 {
@@ -18,12 +15,10 @@ namespace NEXALL
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Pievienot datu kontekstu un interfeisu
             builder.Services.AddDbContext<NexallContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<INexallContext, NexallContext>();
 
-            // Pievienot servisus
             builder.Services.AddScoped<ICarStatisticsService, CarStatisticsService>();
             builder.Services.AddScoped<DataImportService>();
 
@@ -39,7 +34,6 @@ namespace NEXALL
 
             var app = builder.Build();
 
-            // Ielādēt datus no speed.txt faila
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
