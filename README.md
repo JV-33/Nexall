@@ -18,6 +18,3 @@ Note: The initial launch of the ASP.NET Core API can take up to 3 minutes due to
 8. Enter the command `npm start` to start the client side.
 9. Open your browser and enter the address http://localhost:3000 to access the system.
 
-    Project Overview
-The project was created purely for technical demonstration, aiming to showcase all functionalities. Due to the deadline constraints, I couldn't complete the testing phase for the entire project. However, my primary focus is on beck-end testing. I'd like to improve data retrieval as well as data loading to ensure faster performance of the application. The current user interface is kept simple. Given more time, I would dedicate additional effort to make it more engaging from a marketing perspective.
-
