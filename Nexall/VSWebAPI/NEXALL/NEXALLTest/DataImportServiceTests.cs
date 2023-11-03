@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NEXALL.DataContext;
-using NEXALL.Services;
+using Nexall.Data.DataContext;
+using Nexall.Services;
 
 namespace NEXALLTest
 {
     [TestClass]
     public class DataImportServiceTests
     {
-        private NEXALLContext _context;
+        private NexallContext _context;
         private DataImportService _service;
 
         [TestInitialize]
@@ -15,22 +15,22 @@ namespace NEXALLTest
         {
             var databaseName = Guid.NewGuid().ToString();
 
-            var optionsBuilder = new DbContextOptionsBuilder<NEXALLContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<NexallContext>();
             optionsBuilder.UseInMemoryDatabase(databaseName);
 
-            _context = new NEXALLContext(optionsBuilder.Options);
+            _context = new NexallContext(optionsBuilder.Options);
             _service = new DataImportService(_context);
         }
 
         [TestCleanup]
-        public void Cleanup()
+        public void Cleanup_ImportedStatistics_FromContext()
         {
             _context.Statistics.RemoveRange(_context.Statistics);
             _context.SaveChanges();
         }
 
         [TestMethod]
-        public void TestImportData()
+        public void ImportData_ValidDataProvided_TwoRecordsImported()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllLines(filePath, new[] { "2023-10-29\t100\tAB1234", "2023-10-28\t90\tCD5678" });
@@ -42,7 +42,7 @@ namespace NEXALLTest
         }
 
         [TestMethod]
-        public void TestImportDataWithEmptyFile()
+        public void ImportData_EmptyFileProvided_NoDataImported()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllLines(filePath, new string[] { });
@@ -54,7 +54,7 @@ namespace NEXALLTest
         }
 
         [TestMethod]
-        public void TestImportDataWithInvalidFilePath()
+        public void ImportData_InvalidFilePathProvided_NothingImported()
         {
             var filePath = "invalidPath.txt";
 
@@ -65,7 +65,7 @@ namespace NEXALLTest
         }
 
         [TestMethod]
-        public void TestImportDataWithInvalidDataFormat()
+        public void ImportData_InvalidDataFormatProvided_NoDataImported()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllLines(filePath, new[] { "invalidData" });
@@ -77,7 +77,7 @@ namespace NEXALLTest
         }
 
         [TestMethod]
-        public void TestImportDataWithIncorrectData()
+        public void ImportData_IncorrectDataStructureProvided_NoDataImported()
         {
             var filePath = Path.GetTempFileName();
             File.WriteAllLines(filePath, new[] { "2023-10-29\t100\tAB1234\tExtraColumn", "2023-10-28\t90" });

@@ -17,3 +17,4 @@ Note: The initial launch of the ASP.NET Core API can take up to 3 minutes due to
 7. Enter the command `npm install` to install all required packages.
 8. Enter the command `npm start` to start the client side.
 9. Open your browser and enter the address http://localhost:3000 to access the system.
+

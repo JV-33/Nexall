@@ -1,0 +1,107 @@
+body {
+  font-family: 'Arial', sans-serif;
+  font-size: 18px; 
+}
+
+header nav {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start; 
+  padding: 20px 5%;
+  background-color: #282c34;
+}
+
+header nav h1 {
+  margin-right: auto;
+  color: white;
+  border-bottom: none;
+  font-size: 2em; 
+}
+
+
+header nav a {
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+header nav a:hover {
+  background-color: #5dc0db;
+  color: #282c34;
+}
+
+header nav a.active {
+  background: #5dc0db;
+  color: #282c34;
+}
+
+main {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 8px 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+.filter-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.filter-section input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    margin-right: 20px;
+}
+
+.day-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.day-stats h3 {
+  margin: 0;
+}
+
+
+.day-stats .stats {
+  display: flex;
+  gap: 20px;
+}
+
+.day-stats .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day-stats .stat-number {
+  font-weight: bold;
+  font-size: 1.5em;
+}

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NEXALL.DataContext;
-using NEXALL.Services;
+using Nexall.Data;
+using Nexall.Data.DataContext;
+using Nexall.Services;
 
 namespace NEXALL
 {
@@ -14,22 +15,40 @@ namespace NEXALL
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<NEXALLContext>(options =>
+            builder.Services.AddDbContext<NexallContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<INexallContext, NexallContext>();
+
+            builder.Services.AddScoped<ICarStatisticsService, CarStatisticsService>();
+            builder.Services.AddScoped<DataImportService>();
 
             builder.Services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder =>
+                options.AddDefaultPolicy(policyBuilder =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
+                    policyBuilder.WithOrigins("http://localhost:3000")
                           .AllowAnyHeader()
-                           .AllowAnyMethod();
+                          .AllowAnyMethod();
                 });
             });
 
-            builder.Services.AddScoped<DataImportService>();
-
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<INexallContext>();
+                    var dataImportService = services.GetRequiredService<DataImportService>();
+                    dataImportService.ImportData("../Nexall.Data/speed.txt");
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Kļūda, importējot datus.");
+                }
+            }
 
             if (app.Environment.IsDevelopment())
             {
@@ -38,11 +57,8 @@ namespace NEXALL
             }
 
             app.UseHttpsRedirection();
-
             app.UseCors();
-
             app.UseAuthorization();
-
             app.MapControllers();
             app.Run();
         }
